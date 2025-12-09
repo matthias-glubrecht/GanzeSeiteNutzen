@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "ganze-seite-nutzen-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/ganzeSeiteNutzen/GanzeSeiteNutzenWebPart.js",
+          "manifest": "./src/webparts/ganzeSeiteNutzen/GanzeSeiteNutzenWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "GanzeSeiteNutzenWebPartStrings": "lib/webparts/ganzeSeiteNutzen/loc/{locale}.js"
+  }
+}

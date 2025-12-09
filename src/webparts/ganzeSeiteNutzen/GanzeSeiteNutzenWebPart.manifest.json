@@ -1,0 +1,23 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
+  "id": "24d259ae-9b45-4e0a-a355-6155cb1a63f6",
+  "alias": "GanzeSeiteNutzenWebPart",
+  "componentType": "WebPart",
+  "version": "*",
+  "manifestVersion": 2,
+  "requiresCustomScript": false,
+  "preconfiguredEntries": [{
+    "groupId": "5c03119e-3074-46fd-976b-c60198311f70", 
+    "group": { "default": "Other", "de-de": "Sonstige" },
+    "title": { "default": "Use full page area", "de-de": "Ganze Seite nutzen" },
+    "description": { "default": "Use the full available space on a SharePoint page", "de-de": "Den gesamten verfügbaren Platz auf einer SharePoint-Seite verwenden" },
+    "iconImageUrl": "./ganzeSeiteNutzen.png",
+    "properties": {
+      "removeLeftNav": false,
+      "removeTopNav": false,
+      "useFullPageWidth": true,
+      "replaceWebTitle": false,
+      "webTitleTemplate": "{webTitle} - {pageName}"
+    }
+  }]
+}
