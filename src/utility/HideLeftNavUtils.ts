@@ -5,7 +5,6 @@ const STYLE_ID: string = 'hide-left-nav-dynamic-styles';
 
 /**
  * Injects CSS styles into the page head to hide the SharePoint left navigation
- * and expand the content area to full width.
  */
 export function applyHideLeftNavStyles(): void {
   const cssRules: string = `

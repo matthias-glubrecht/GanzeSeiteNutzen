@@ -1,4 +1,4 @@
-# Ganze Seite nutzen (Use Full Page Width)
+# Ganze Seite nutzen (Use Full Page Area)
 
 This SharePoint Framework (SPFx) Web Part allows you to maximize the available screen space on your SharePoint pages. It provides a set of configurable options to hide standard navigation elements and force the content area to use the full width of the browser window.
 
