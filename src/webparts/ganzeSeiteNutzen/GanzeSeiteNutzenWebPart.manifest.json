@@ -8,7 +8,7 @@
   "requiresCustomScript": false,
   "preconfiguredEntries": [{
     "groupId": "5c03119e-3074-46fd-976b-c60198311f70", 
-    "group": { "default": "Other", "de-de": "Sonstige" },
+    "group": { "default": "Other", "de-de": "Weitere" },
     "title": { "default": "Use full page area", "de-de": "Ganze Seite nutzen" },
     "description": { "default": "Use the full available space on a SharePoint page", "de-de": "Den gesamten verfügbaren Platz auf einer SharePoint-Seite verwenden" },
     "iconImageUrl": "./ganzeSeiteNutzen.png",

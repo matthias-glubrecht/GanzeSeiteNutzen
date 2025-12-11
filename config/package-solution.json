@@ -1,9 +1,9 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
   "solution": {
-    "name": "ganze-seite-nutzen-client-side-solution",
+    "name": "ganze-seite-nutzen",
     "id": "237deaba-dbad-44a4-ae91-415988714722",
-    "version": "1.0.0.0",
+    "version": "1.0.1.0",
     "includeClientSideAssets": true,
     "skipFeatureDeployment": true
   },
