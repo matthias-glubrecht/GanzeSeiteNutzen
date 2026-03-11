@@ -1,6 +1,6 @@
 // tslint:disable:max-line-length
 
-import { DisplayMode } from '@microsoft/sp-core-library';
+import { DisplayMode, Environment } from '@microsoft/sp-core-library';
 import {
   BaseClientSideWebPart,
   IPropertyPaneConfiguration,
@@ -10,9 +10,9 @@ import {
 
 import styles from './GanzeSeiteNutzenWebPart.module.scss';
 import * as strings from 'GanzeSeiteNutzenWebPartStrings';
-import { applyHideLeftNavStyles, removeHideLeftNavStyles } from '../../utility/HideLeftNavUtils';
-import { applyRemoveTopNavStyles, removeRemoveTopNavStyles } from '../../utility/RemoveTopNavUtils';
-import { applyFullPageWidthStyles, removeFullPageWidthStyles } from '../../utility/FullPageWidthUtils';
+import { hideLeftNavStyles } from '../../utility/hideLeftNavStyles';
+import { removeTopNavStyles } from '../../utility/removeTopNavStyles';
+import { fullPageWidthStyles } from '../../utility/fullPageWidthStyles';
 import { PageTitleUtils } from '../../utility/PageTitleUtils';
 
 export interface IGanzeSeiteNutzenWebPartProps {
@@ -29,7 +29,7 @@ export default class GanzeSeiteNutzenWebPart extends BaseClientSideWebPart<IGanz
 
   public onInit(): Promise<void> {
     this._pageTitleUtils = new PageTitleUtils();
-    this._applyChanges();
+    this._applyCssChanges();
     return super.onInit();
   }
 
@@ -62,19 +62,21 @@ export default class GanzeSeiteNutzenWebPart extends BaseClientSideWebPart<IGanz
       this.domElement.innerHTML = '';
     }
 
-    this._applyChanges();
+    this._applyCssChanges();
+    this._applyPageTitle();
   }
 
   protected onDispose(): void {
-    removeFullPageWidthStyles();
+    fullPageWidthStyles.remove();
     this._pageTitleUtils.restoreTitle();
-    removeHideLeftNavStyles();
-    removeRemoveTopNavStyles();
+    hideLeftNavStyles.remove();
+    removeTopNavStyles.remove();
   }
 
   protected onPropertyPaneFieldChanged(propertyPath: string, oldValue: any, newValue: any): void { // tslint:disable-line:no-any
     super.onPropertyPaneFieldChanged(propertyPath, oldValue, newValue);
-    this._applyChanges();
+    this._applyCssChanges();
+    this._applyPageTitle();
   }
 
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
@@ -113,35 +115,47 @@ export default class GanzeSeiteNutzenWebPart extends BaseClientSideWebPart<IGanz
     };
   }
 
-  private _applyChanges(): void {
-    // Full Page Width
-    if (this.properties.useFullPageWidth) {
-      applyFullPageWidthStyles();
-    } else {
-      removeFullPageWidthStyles();
-    }
+  /** Apply CSS injections – safe to call early (no DOM dependency). */
+  private _applyCssChanges(): void {
+    fullPageWidthStyles.toggle(this.properties.useFullPageWidth);
+    hideLeftNavStyles.toggle(this.properties.removeLeftNav);
+    removeTopNavStyles.toggle(this.properties.removeTopNav);
+  }
 
-    // Hide Left Nav
-    if (this.properties.removeLeftNav) {
-      applyHideLeftNavStyles();
-    } else {
-      removeHideLeftNavStyles();
-    }
-
-    // Hide Top Nav
-    if (this.properties.removeTopNav) {
-      applyRemoveTopNavStyles();
-    } else {
-      removeRemoveTopNavStyles();
-    }
-
-    // Page Title
-    if (this.properties.replaceWebTitle) {
+  /** Apply page-title changes – must be called after the DOM is ready. */
+  private _applyPageTitle(): void {
+    // Skip in edit mode to avoid blanking the SPO page
+    if (this.properties.replaceWebTitle && !this._isPageInEditMode()) {
       const { pageName, webTitle } = this._getPageAndWebTitle();
-      this._pageTitleUtils.updateTitle(webTitle, pageName, this.properties.webTitleTemplate);
+      this._pageTitleUtils.updateTitle(webTitle, pageName, this.properties.webTitleTemplate, Environment.type);
     } else {
       this._pageTitleUtils.restoreTitle();
     }
+  }
+
+  /**
+   * Reliably detects whether the page is in edit mode.
+   * this.displayMode only reflects the web-part's own state, so we also
+   * check several DOM indicators that SPO sets when editing a page.
+   */
+  private _isPageInEditMode(): boolean {
+    // 1. SPFx web-part-level flag (set when the property pane is open)
+    if (this.displayMode === DisplayMode.Edit) {
+      return true;
+    }
+
+    // 2. Any contenteditable region on the page (SPO makes canvas zones editable)
+    if (document.querySelector('[contenteditable="true"]')) {
+      return true;
+    }
+
+    // 3. SPO edit-mode command-bar buttons (Publish / Save / Discard)
+    if (document.querySelector('button[data-automation-id="pageCommandBarPublishButton"]') ||
+        document.querySelector('button[data-automation-id="pageCommandBarSaveButton"]')) {
+      return true;
+    }
+
+    return false;
   }
 
   private _getPageAndWebTitle(): { pageName: string, webTitle: string } {

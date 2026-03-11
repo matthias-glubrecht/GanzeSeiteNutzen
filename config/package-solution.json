@@ -3,7 +3,7 @@
   "solution": {
     "name": "ganze-seite-nutzen",
     "id": "237deaba-dbad-44a4-ae91-415988714722",
-    "version": "1.0.1.0",
+    "version": "1.0.2.0",
     "includeClientSideAssets": true,
     "skipFeatureDeployment": true
   },
